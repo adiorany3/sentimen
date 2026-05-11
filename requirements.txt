@@ -1,6 +1,7 @@
 streamlit
 pandas
 feedparser
+requests
 transformers
 torch
 openpyxl

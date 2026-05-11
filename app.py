@@ -1,12 +1,14 @@
 import os
 import re
 import sqlite3
+import time
 from html import unescape
 from datetime import datetime
 from urllib.parse import quote_plus
 
 import feedparser
 import pandas as pd
+import requests
 import streamlit as st
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 
@@ -176,9 +178,49 @@ def is_relevant_to_theme(title, summary, theme):
 # AMBIL BERITA
 # =========================
 
-@st.cache_data(ttl=1800)
+def get_feed_with_retry(feed_url, max_retries=3, timeout=15):
+    """
+    Mengambil RSS dengan cara yang lebih aman.
+    Beberapa server RSS akan menutup koneksi jika request tidak memiliki User-Agent
+    atau jika koneksi terlalu lama. Fungsi ini membuat aplikasi tidak langsung crash.
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0 Safari/537.36"
+        ),
+        "Accept": "application/rss+xml, application/xml, text/xml, */*",
+    }
+
+    last_error = None
+
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(
+                feed_url,
+                headers=headers,
+                timeout=timeout,
+                allow_redirects=True,
+            )
+            response.raise_for_status()
+            return feedparser.parse(response.content), None
+
+        except Exception as error:
+            last_error = error
+            if attempt < max_retries - 1:
+                time.sleep(1.5)
+
+    return None, str(last_error)
+
+
+@st.cache_data(ttl=1800, show_spinner=False)
 def fetch_rss(feed_url, theme, source_name, max_items=20, filter_by_theme=True):
-    feed = feedparser.parse(feed_url)
+    feed, error = get_feed_with_retry(feed_url)
+
+    if error or feed is None:
+        return [], f"Gagal membaca RSS {source_name}: {error}"
+
     rows = []
 
     for entry in feed.entries:
@@ -206,43 +248,48 @@ def fetch_rss(feed_url, theme, source_name, max_items=20, filter_by_theme=True):
         if len(rows) >= max_items:
             break
 
-    return rows
+    return rows, None
 
 
 def fetch_news_by_theme(theme, max_items, custom_feeds):
     rows = []
+    errors = []
 
     google_rss = build_google_news_rss(theme)
-    rows.extend(
-        fetch_rss(
-            feed_url=google_rss,
-            theme=theme,
-            source_name="Google News",
-            max_items=max_items,
-            filter_by_theme=False
-        )
+    google_rows, google_error = fetch_rss(
+        feed_url=google_rss,
+        theme=theme,
+        source_name="Google News",
+        max_items=max_items,
+        filter_by_theme=False
     )
+    rows.extend(google_rows)
+
+    if google_error:
+        errors.append(google_error)
 
     for source_name, feed_url in custom_feeds.items():
-        rows.extend(
-            fetch_rss(
-                feed_url=feed_url,
-                theme=theme,
-                source_name=source_name,
-                max_items=max_items,
-                filter_by_theme=True
-            )
+        source_rows, source_error = fetch_rss(
+            feed_url=feed_url,
+            theme=theme,
+            source_name=source_name,
+            max_items=max_items,
+            filter_by_theme=True
         )
+        rows.extend(source_rows)
+
+        if source_error:
+            errors.append(source_error)
 
     df = pd.DataFrame(rows)
 
     if df.empty:
-        return df
+        return df, errors
 
     df = df.drop_duplicates(subset=["tema", "link"])
     df = df.head(max_items)
 
-    return df
+    return df, errors
 
 
 # =========================
@@ -446,15 +493,20 @@ if st.button("Mulai Analisis", type="primary"):
         for index, theme in enumerate(themes):
             st.write(f"Mengambil berita untuk tema: **{theme}**")
 
-            news_df = fetch_news_by_theme(
+            news_df, rss_errors = fetch_news_by_theme(
                 theme=theme,
                 max_items=max_items,
                 custom_feeds=custom_feeds
             )
 
+            for rss_error in rss_errors:
+                st.warning(rss_error)
+
             if not news_df.empty:
                 analyzed_df = add_sentiment(news_df)
                 all_results.append(analyzed_df)
+            else:
+                st.info(f"Tidak ada berita yang berhasil diambil untuk tema: {theme}")
 
             progress.progress((index + 1) / len(themes))
 

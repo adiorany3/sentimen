@@ -8,17 +8,28 @@ Aplikasi ini dibuat dengan Python dan Streamlit untuk:
 4. Menyimpan hasil ke database SQLite.
 5. Menampilkan dashboard hasil analisis dan menyediakan fitur download CSV.
 
+## Perbaikan Versi Ini
+
+Versi ini sudah diperbaiki agar tidak crash ketika salah satu sumber RSS menutup koneksi atau tidak memberi respons.
+
+Perubahan utama:
+
+- Menambahkan `requests` dengan `User-Agent`, timeout, redirect, dan retry.
+- Jika satu sumber RSS gagal, aplikasi hanya menampilkan peringatan dan tetap lanjut ke sumber lain.
+- Menambahkan `runtime.txt` agar Streamlit Cloud menggunakan Python 3.11 yang lebih stabil untuk `torch` dan `transformers`.
+
 ## Struktur Folder
 
 ```text
 sentimen_berita_streamlit/
 ├── app.py
 ├── requirements.txt
+├── runtime.txt
 ├── README.md
 └── data/
 ```
 
-## Cara Instalasi
+## Cara Instalasi Lokal
 
 ### Windows
 
@@ -37,6 +48,16 @@ source venv/bin/activate
 pip install -r requirements.txt
 streamlit run app.py
 ```
+
+## Cara Deploy ke Streamlit Cloud
+
+1. Upload semua file ke repository GitHub.
+2. Pastikan file berikut ada di root folder project:
+   - `app.py`
+   - `requirements.txt`
+   - `runtime.txt`
+3. Redeploy aplikasi di Streamlit Cloud.
+4. Jika sebelumnya sudah pernah deploy, klik **Manage app** lalu pilih **Reboot app** atau **Clear cache**.
 
 ## Format Input Tema Manual
 
