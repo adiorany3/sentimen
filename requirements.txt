@@ -1,0 +1,6 @@
+streamlit
+pandas
+feedparser
+transformers
+torch
+openpyxl
