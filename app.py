@@ -399,7 +399,6 @@ Tempo Bisnis|https://rss.tempo.co/bisnis
 CNBC Indonesia News|https://www.cnbcindonesia.com/news/rss
 CNBC Indonesia Market|https://www.cnbcindonesia.com/market/rss
 Liputan6 News|https://feed.liputan6.com/rss/news
-Suara News|https://www.suara.com/rss/news
 Republika Nasional|https://www.republika.co.id/rss/nasional"""
 
     custom_rss_text = st.text_area(
