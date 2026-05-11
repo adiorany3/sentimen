@@ -18,6 +18,36 @@ Perubahan utama:
 - Jika satu sumber RSS gagal, aplikasi hanya menampilkan peringatan dan tetap lanjut ke sumber lain.
 - Menambahkan `runtime.txt` agar Streamlit Cloud menggunakan Python 3.11 yang lebih stabil untuk `torch` dan `transformers`.
 
+
+## Sumber RSS Bawaan
+
+Versi ini sudah menambahkan lebih dari 10 sumber RSS bawaan. Daftar awal yang tersedia di sidebar:
+
+1. ANTARA Terkini
+2. ANTARA Top News
+3. ANTARA Politik
+4. ANTARA Hukum
+5. ANTARA Ekonomi
+6. ANTARA Dunia
+7. ANTARA Olahraga
+8. ANTARA Teknologi
+9. CNN Indonesia Nasional
+10. CNN Indonesia Ekonomi
+11. CNN Indonesia Teknologi
+12. Tempo Nasional
+13. Tempo Bisnis
+14. CNBC Indonesia News
+15. CNBC Indonesia Market
+16. Liputan6 News
+17. Suara News
+18. Republika Nasional
+
+Daftar ini tetap bisa diedit dari sidebar aplikasi dengan format:
+
+```text
+Nama Sumber|URL RSS
+```
+
 ## Struktur Folder
 
 ```text

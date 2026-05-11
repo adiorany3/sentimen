@@ -384,12 +384,29 @@ with st.sidebar:
     st.write("Masukkan RSS tambahan, satu URL per baris.")
 
     default_rss = """ANTARA Terkini|https://www.antaranews.com/rss/terkini.xml
-ANTARA Ekonomi|https://www.antaranews.com/rss/ekonomi.xml"""
+ANTARA Top News|https://www.antaranews.com/rss/top-news.xml
+ANTARA Politik|https://www.antaranews.com/rss/politik.xml
+ANTARA Hukum|https://www.antaranews.com/rss/hukum.xml
+ANTARA Ekonomi|https://www.antaranews.com/rss/ekonomi.xml
+ANTARA Dunia|https://www.antaranews.com/rss/dunia.xml
+ANTARA Olahraga|https://www.antaranews.com/rss/olahraga.xml
+ANTARA Teknologi|https://www.antaranews.com/rss/tekno.xml
+CNN Indonesia Nasional|https://www.cnnindonesia.com/nasional/rss
+CNN Indonesia Ekonomi|https://www.cnnindonesia.com/ekonomi/rss
+CNN Indonesia Teknologi|https://www.cnnindonesia.com/teknologi/rss
+Tempo Nasional|https://rss.tempo.co/nasional
+Tempo Bisnis|https://rss.tempo.co/bisnis
+CNBC Indonesia News|https://www.cnbcindonesia.com/news/rss
+CNBC Indonesia Market|https://www.cnbcindonesia.com/market/rss
+Liputan6 News|https://feed.liputan6.com/rss/news
+Suara News|https://www.suara.com/rss/news
+Republika Nasional|https://www.republika.co.id/rss/nasional"""
 
     custom_rss_text = st.text_area(
         "Format: Nama Sumber|URL RSS",
         value=default_rss,
-        height=140
+        height=360,
+        help="Daftar ini sudah berisi lebih dari 10 RSS. Anda tetap bisa menambah, menghapus, atau mengganti URL sesuai kebutuhan."
     )
 
     custom_feeds = {}
@@ -402,7 +419,13 @@ ANTARA Ekonomi|https://www.antaranews.com/rss/ekonomi.xml"""
 
         if "|" in line:
             name, url = line.split("|", 1)
-            custom_feeds[name.strip()] = url.strip()
+            name = name.strip()
+            url = url.strip()
+
+            if name and url:
+                custom_feeds[name] = url
+
+    st.caption(f"Total sumber RSS aktif: {len(custom_feeds)} sumber")
 
     st.divider()
 
