@@ -784,15 +784,7 @@ with st.sidebar:
     st.subheader("RSS Tambahan")
     st.write("Masukkan RSS tambahan, satu URL per baris.")
 
-    default_rss = """ANTARA Terkini|https://www.antaranews.com/rss/terkini.xml
-ANTARA Top News|https://www.antaranews.com/rss/top-news.xml
-ANTARA Politik|https://www.antaranews.com/rss/politik.xml
-ANTARA Hukum|https://www.antaranews.com/rss/hukum.xml
-ANTARA Ekonomi|https://www.antaranews.com/rss/ekonomi.xml
-ANTARA Dunia|https://www.antaranews.com/rss/dunia.xml
-ANTARA Olahraga|https://www.antaranews.com/rss/olahraga.xml
-ANTARA Teknologi|https://www.antaranews.com/rss/tekno.xml
-CNN Indonesia Nasional|https://www.cnnindonesia.com/nasional/rss
+    default_rss = """CNN Indonesia Nasional|https://www.cnnindonesia.com/nasional/rss
 CNN Indonesia Ekonomi|https://www.cnnindonesia.com/ekonomi/rss
 CNN Indonesia Teknologi|https://www.cnnindonesia.com/teknologi/rss
 Tempo Nasional|https://rss.tempo.co/nasional
@@ -800,7 +792,14 @@ Tempo Bisnis|https://rss.tempo.co/bisnis
 CNBC Indonesia News|https://www.cnbcindonesia.com/news/rss
 CNBC Indonesia Market|https://www.cnbcindonesia.com/market/rss
 Liputan6 News|https://feed.liputan6.com/rss/news
-Republika Nasional|https://www.republika.co.id/rss/nasional"""
+Suara News|https://www.suara.com/rss/news
+Republika Nasional|https://www.republika.co.id/rss/nasional
+Kompas News|https://rss.kompas.com/news
+Detik News|https://rss.detik.com/index.php/detikcom
+Okezone News|https://sindikasi.okezone.com/index.php/rss/0/RSS2.0
+BBC Indonesia|https://feeds.bbci.co.uk/indonesian/rss.xml
+DW Indonesia|https://rss.dw.com/xml/rss-id-all
+VOA Indonesia|https://www.voaindonesia.com/api/zrqiteuuir"""
 
     custom_rss_text = st.text_area(
         "Format: Nama Sumber|URL RSS",
@@ -837,7 +836,7 @@ Republika Nasional|https://www.republika.co.id/rss/nasional"""
         help="Dipakai untuk mencari video terkait berita dan membaca komentar YouTube. Kosongkan jika tidak digunakan."
     )
 
-    enable_reddit = st.checkbox("Aktifkan Reddit publik", value=True)
+    enable_reddit = st.checkbox("Aktifkan Reddit publik", value=False)
     reddit_subreddit = st.text_input(
         "Subreddit opsional",
         value="",
@@ -1046,8 +1045,8 @@ with tab_sosmed:
         selected_news_indices = [news_options[label] for label in selected_news_labels]
 
         st.caption(
-            "YouTube membutuhkan API key. Reddit memakai JSON publik dan bisa saja dibatasi oleh Reddit/hosting. "
-            "Jika pengambilan otomatis gagal, gunakan input komentar manual di bagian bawah."
+            "YouTube membutuhkan API key. Reddit dibuat nonaktif secara default karena akses JSON publik sering diblokir 403 oleh hosting tertentu. "
+            "Jika ingin mencoba Reddit, aktifkan checkbox Reddit di sidebar. Jika gagal, gunakan input komentar manual di bagian bawah."
         )
 
         if st.button("Ambil & Analisis Komentar Sosial Media", type="primary"):

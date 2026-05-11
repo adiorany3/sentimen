@@ -200,3 +200,12 @@ Aplikasi menghasilkan dua jenis data:
 ## Catatan
 
 Aplikasi ini menganalisis judul/ringkasan berita dari RSS dan teks komentar sosial media. Untuk analisis berita yang lebih mendalam, sistem dapat dikembangkan dengan scraping isi artikel lengkap.
+
+
+## Perubahan versi no-ANTARA
+
+- Seluruh RSS ANTARA dihapus dari daftar sumber bawaan karena beberapa endpoint dapat memutus koneksi atau gagal dibaca di Streamlit Cloud.
+- Reddit dibuat nonaktif secara default karena endpoint JSON publik Reddit sering mengembalikan 403 pada hosting tertentu.
+- Pengambilan komentar YouTube dan input komentar manual tetap tersedia.
+
+- Setelah ANTARA dihapus, daftar bawaan tetap lebih dari 10 sumber dengan tambahan Kompas, Detik, Okezone, BBC Indonesia, DW Indonesia, dan VOA Indonesia.
